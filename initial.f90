@@ -11,7 +11,7 @@ subroutine init
     do i = imin-2, imax+2
         do j = jmin-2, jmax+2
                 !-0.5d0 + dx * x(i, j) <= 0.0d0
-                bq(i, j, 1:4) = qtobq(1.0d0, 2.0d0, 0.0d0, 1.0d0/gamma)
+                bq(i, j, 1:4) = qtobq(1.0d0, 8.0d0, 0.0d0, 1.0d0/gamma)
         enddo
     enddo
 

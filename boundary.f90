@@ -73,23 +73,39 @@ subroutine bound
     !slip condition
     !j+1=j, u_j+1 = -u_j, rho_j+1 = rho_j, e_j+1 = e_j
     do i = imin-2, imax+2
-        !101=100, u_101 = u_100, rho_101 = rho_100, e_101 = e_100
+        !101=100, u_101 = -u_100, rho_101 = rho_100, e_101 = e_100
         !temp_q(2) = u_100 = u, temp_q(3) = v_100 = v
         temp_q(:) = bqtoq(bq(i, jmax, :))
         q_bc(1) = temp_q(1)
-        q_bc(2) = temp_q(2)
-        q_bc(3) = temp_q(3)
-        q_bc(4) = temp_q(4)
-        bq(i, jmax+1, :) = qtobq(q_bc(1), q_bc(2), q_bc(3), q_bc(4))
+        u = temp_q(2)
+        v = temp_q(3)
+        ! bu=U_100, bv=UU_100を求め、q_bc(2)=u_101, q_bc(3)=v_101を求める
+        bu = ave_n(nx, i, jmax) * u + ave_n(ny, i, jmax) * v
+        bv = -ave_n(ny, i, jmax) * u + ave_n(nx, i, jmax) * v
+        q_bc(2) = (-ave_n(nx, i, jmax+1) * bu - ave_n(ny, i, jmax+1) * bv)&
+                & / (ave_n(nx, i, jmax+1) ** 2.0d0 + ave_n(ny, i, jmax+1) ** 2.0d0)
+        q_bc(3) = (-ave_n(ny, i, jmax+1) * bu + ave_n(nx, i, jmax+1) * bv)&
+                & / (ave_n(nx, i, jmax+1) ** 2.0d0 + ave_n(ny, i, jmax+1) ** 2.0d0)
+        !pは適当、e=bq(i, 101, 4)はe_101 = e_100
+        bq(i, jmax+1, :) = qtobq(q_bc(1), q_bc(2), q_bc(3), 0.0d0)
+        bq(i, jmax+1, 4) = bq(i, jmax, 4)
 
-        !102=99, u_102 = u_99, rho_102 = rho_99, e_102 = e_99
+        !102=99, u_102 = -u_99, rho_102 = rho_99, e_102 = e_99
         !temp_q(2) = u_99 = u, temp_q(3) = v_99 = v
         temp_q(:) = bqtoq(bq(i, jmax-1, :))
         q_bc(1) = temp_q(1)
-        q_bc(2) = temp_q(2)
-        q_bc(3) = temp_q(3)
-        q_bc(4) = temp_q(4)
-        bq(i, jmax+2, :) = qtobq(q_bc(1), q_bc(2), q_bc(3), q_bc(4))
+        u = temp_q(2)
+        v = temp_q(3)
+        ! bu=U_99, bv=UU_99を求め、q_bc(2)=u_102, q_bc(3)=v_102を求める
+        bu = ave_n(nx, i, jmax-1) * u + ave_n(ny, i, jmax-1) * v
+        bv = -ave_n(ny, i, jmax-1) * u + ave_n(nx, i, jmax-1) * v
+        q_bc(2) = (-ave_n(nx, i, jmax+2) * bu - ave_n(ny, i, jmax+2) * bv)&
+                & / (ave_n(nx, i, jmax+2) ** 2.0d0 + ave_n(ny, i, jmax+2) ** 2.0d0)
+        q_bc(3) = (-ave_n(ny, i, jmax+2) * bu + ave_n(nx, i, jmax+2) * bv)&
+                & / (ave_n(nx, i, jmax+2) ** 2.0d0 + ave_n(ny, i, jmax+2) ** 2.0d0)
+        !pは適当、e=bq(i, 102, 4)はe_102 = e_99
+        bq(i, jmax+2, :) = qtobq(q_bc(1), q_bc(2), q_bc(3), 0.0d0)
+        bq(i, jmax+2, 4) = bq(i, jmax-1, 4)
     end do
 
 
