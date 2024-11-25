@@ -1,6 +1,6 @@
 module params
     implicit none
-    integer, parameter :: imin=1, imax=100, jmin=1, jmax=60, nmax=3000
+    integer, parameter :: imin=1, imax=100, jmin=1, jmax=60, nmax=5000
     real(8), parameter :: ex_time = 0.2d0, &
     & cfl = 0.15d0, gamma = 1.4d0, beta = 2.5d0, phi = 1.0d0 / 3.0d0, &
     & pi = acos(-1.0d0), theta = (5.0d0 / 180.0d0) * pi, res_min = 10.0d0 ** (-4.0d0)
